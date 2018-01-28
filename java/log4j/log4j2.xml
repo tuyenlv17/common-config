@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration monitorinterval="30" status="info" strict="true">
+    <Properties>
+        <Property name="base_log_dir">logs-dev</Property>
+        <Property name="error_log">${base_log_dir}/errors/logging-errors.log</Property>
+        <Property name="trace_log">${base_log_dir}/traces/logging-traces.log</Property>
+        <Property name="log_pattern">[%d{ISO8601}][%-5p][%-c{1.}][%M:%L][%t] - %msg%n</Property>
+    </Properties>
+    <Appenders>
+        <Appender type="Console" name="Console">
+            <Layout type="PatternLayout" pattern="${log_pattern}"/>
+        </Appender>
+        <RollingFile name="Rolling_Error" fileName="${error_log}"
+                     filePattern="${base_log_dir}/errors/logging-errors-%d{yyyy-MM-dd}.log">
+            <PatternLayout>
+                <pattern>${log_pattern}</pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+        </RollingFile>
+        <RollingFile name="Rolling_Trace" fileName="${trace_log}"
+                     filePattern="${base_log_dir}/traces/logging-%d{yyyy-MM-dd}.log">
+            <PatternLayout>
+                <pattern>${log_pattern}</pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Rolling_Error" level="error"/>
+            <AppenderRef ref="Console" level="error"/>
+        </Root>
+        <Logger name="com.github.tuyenlv17" level="trace">
+            <AppenderRef ref="Rolling_Error" level="error"/>
+            <AppenderRef ref="Rolling_Trace" level="debug"/>
+        </Logger>
+    </Loggers>
+</Configuration>
